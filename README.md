@@ -1,68 +1,68 @@
 # EmprestimoLivros
 
-Sistema web para gerenciamento de empréstimos de livros, desenvolvido com ASP.NET Core 9 MVC.
+Web system for managing book loans, built with ASP.NET Core 9 MVC.
 
-🔗 **Demo ao vivo:** https://emprestimolivros-9csn.onrender.com
+🔗 **Live demo:** https://emprestimolivros-9csn.onrender.com
 
-## Sobre o projeto
+## About the project
 
-EmprestimoLivros é uma aplicação web que permite o controle completo de empréstimos de livros. Cada usuário pode cadastrar, editar, excluir e visualizar seus próprios empréstimos, com sistema de autenticação e isolamento de dados.
+EmprestimoLivros is a web application that allows full control over book loans. Each user can create, edit, delete, and view their own loans, with authentication and data isolation.
 
-O projeto conta com um **modo demonstração** acessível por um botão na tela de login, permitindo testar a aplicação sem precisar criar conta. Os dados da conta demo são resetados automaticamente a cada 24 horas.
+The project includes a **demo mode** accessible via a button on the login screen, letting you try the app without creating an account. Demo account data is automatically reset every 24 hours.
 
-## Como testar
+## How to test
 
-Acesse https://emprestimolivros-9csn.onrender.com e você pode:
+Go to https://emprestimolivros-9csn.onrender.com and you can:
 
-1. **Entrar como Demo** — clique no botão "Entrar como Demo" na tela de login (sem precisar cadastrar)
-2. **Criar uma conta** — use o cadastro para ter sua própria área isolada
+1. **Sign In as Demo** — click the "Sign In as Demo" button on the login screen (no need to register)
+2. **Create an account** — register to get your own isolated area
 
-> A aplicação está no plano gratuito do Render. A primeira visita pode levar até 30 segundos para carregar (cold start).
+> The application runs on Render's free tier. The first visit may take up to 30 seconds to load (cold start).
 
-## Funcionalidades
+## Features
 
-- Cadastro e login de usuários (ASP.NET Identity)
-- Modo demonstração com botão de acesso rápido
-- CRUD completo de empréstimos (criar, listar, editar, excluir)
-- Isolamento de dados: cada usuário vê apenas seus próprios empréstimos
-- Reset automático dos dados de demonstração a cada 24 horas
-- Mensagens de feedback ao usuário (sucesso/erro)
-- Interface responsiva com Bootstrap 5
+- User registration and login (ASP.NET Identity)
+- Demo mode with quick-access button
+- Full loan CRUD (create, list, edit, delete)
+- Data isolation: each user sees only their own loans
+- Automatic reset of demo data every 24 hours
+- User feedback messages (success/error)
+- Responsive interface with Bootstrap 5
 
-## Tecnologias
+## Technologies
 
-- **ASP.NET Core 9 MVC** — framework web
+- **ASP.NET Core 9 MVC** — web framework
 - **Entity Framework Core 9** — ORM
-- **ASP.NET Identity** — autenticação e autorização
-- **PostgreSQL (Neon)** — banco de dados na nuvem
-- **Bootstrap 5** — interface
-- **Docker** — containerização
-- **Render** — hospedagem com CI/CD automático
-- **GitHub** — versionamento
+- **ASP.NET Identity** — authentication and authorization
+- **PostgreSQL (Neon)** — cloud database
+- **Bootstrap 5** — UI
+- **Docker** — containerization
+- **Render** — hosting with automatic CI/CD
+- **GitHub** — version control
 
 
 
-## Estrutura do projeto
+## Project structure
 
 ```
 EmprestimoLivros/
-├── Controllers/      Lógica de controle (Account, Emprestimo, Home)
-├── Data/             DbContext e Seed inicial
-├── Models/           Entidades
-├── ViewModels/       ViewModels para Login e Register
-├── Services/         BackgroundService de reset diário
-├── Views/            Views Razor
-├── Migrations/       Migrations do EF Core
-├── wwwroot/          Arquivos estáticos (css, js, imagens)
+├── Controllers/      Controller logic (Account, Loan, Home)
+├── Data/             DbContext and initial seed
+├── Models/           Entities
+├── ViewModels/       ViewModels for Login and Register
+├── Services/         Daily reset BackgroundService
+├── Views/            Razor views
+├── Migrations/       EF Core migrations
+├── wwwroot/          Static files (css, js, images)
 ├── Dockerfile        Multi-stage build
-└── Program.cs        Bootstrap da aplicação
+└── Program.cs        Application bootstrap
 ```
 
 ## Deploy
 
-O deploy é feito automaticamente no Render a cada push na branch `main`. O Dockerfile faz build multi-stage e as migrations são aplicadas automaticamente no startup da aplicação.
+Deployment happens automatically on Render on every push to the `main` branch. The Dockerfile does a multi-stage build and migrations are applied automatically on application startup.
 
-## Autor
+## Author
 
 **Ariel Mariussi**
 

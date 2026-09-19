@@ -79,20 +79,20 @@ using (var scope = app.Services.CreateScope())
     {
         var db = services.GetRequiredService<ApplicationDbContext>();
         db.Database.Migrate();
-        Console.WriteLine("✅ Migrations aplicadas!");
+        Console.WriteLine("✅ Migrations applied!");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Erro nas migrations: {ex.Message}");
+        Console.WriteLine($"❌ Migration error: {ex.Message}");
     }
 
     try
     {
-        await EmprestimoLivros.Data.SeedData.InicializarAsync(services);
+        await EmprestimoLivros.Data.SeedData.InitializeAsync(services);
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Erro no Seed: {ex.Message}");
+        Console.WriteLine($"❌ Seed error: {ex.Message}");
     }
 }
 

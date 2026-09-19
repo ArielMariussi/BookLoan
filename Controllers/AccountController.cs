@@ -40,10 +40,10 @@ public class AccountController : Controller
 
         if (result.Succeeded)
         {
-            TempData["MensagemSucesso"] = "Login realizado com sucesso!";
+            TempData["SuccessMessage"] = "Login successful!";
             return RedirectToAction("Index", "Home");
         }
-        ModelState.AddModelError(string.Empty, "Email ou senha invalidos");
+        ModelState.AddModelError(string.Empty, "Invalid email or password");
         return View(model);
 
     }
@@ -76,7 +76,7 @@ public class AccountController : Controller
         if (result.Succeeded)
         {
             await _signInManager.SignInAsync(user, isPersistent: false);
-            TempData["MensagemSucesso"] = "Conta criada com sucesso!";
+            TempData["SuccessMessage"] = "Account created successfully!";
             return RedirectToAction("Index", "Home");
         }
 
@@ -103,12 +103,12 @@ public class AccountController : Controller
 
         if (demoUser == null)
         {
-            ModelState.AddModelError(string.Empty, "Conta demo não está disponível no momento");
+            ModelState.AddModelError(string.Empty, "Demo account is not available right now");
             return View("Login");
         }
 
         await _signInManager.SignInAsync(demoUser, isPersistent: false);
-        TempData["MensagemSucesso"] = "Bem vindo ao Modo Demonstraçao!";
+        TempData["SuccessMessage"] = "Welcome to Demo Mode!";
         return RedirectToAction("Index", "Home");
     }
 }

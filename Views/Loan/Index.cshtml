@@ -1,0 +1,50 @@
+@model IEnumerable<Loan>
+
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-5 ">
+        <h1>Loans</h1>
+        <a class="btn btn-success mx-2" asp-controller="Loan" asp-action="Create">Add new loan</a>
+    </div>
+
+    @if(TempData["SuccessMessage"] != null)
+    {
+        <div class=" alert alert-success text-light" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+
+    }
+
+
+
+    <table id="Loans" class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th scope="col" >Borrower</th>
+                <th scope="col" >Lender</th>
+                <th scope="col">Book</th>
+                <th scope="col">Last Updated</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                @foreach (var loan in Model)
+                {
+                    <tr>
+                        <td>@loan.Borrower</td>
+                        <td>@loan.Lender</td>
+                        <td>@loan.BookTitle</td>
+                        <td>@loan.LastUpdatedAt</td>
+                        <td class="d-flex justify-content-around">
+                            <a  asp-controller="Loan" asp-action="Edit" asp-route-id="@loan.Id" class="btn btn-warning  mx-2 px-5">Edit</a>
+                            <a  asp-controller="Loan" asp-action="Delete" asp-route-id="@loan.Id" class="btn btn-danger mx-2 px-5" >Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</div>

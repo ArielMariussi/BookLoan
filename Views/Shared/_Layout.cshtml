@@ -32,7 +32,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Emprestimo" asp-action="Index">Empréstimos</a>
+                                <a class="nav-link text-light" asp-area="" asp-controller="Loan" asp-action="Index">Loans</a>
                             </li>
                         }
                     </ul>
@@ -47,7 +47,7 @@
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                     <button type="submit" class="btn btn-outline-light btn-sm">
-                                        SAIR
+                                        LOG OUT
                                     </button>
                                 </form>
                             </li>
@@ -56,12 +56,12 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Account" asp-action="Login">
-                                    Entrar
+                                    Sign In
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Account" asp-action="Register">
-                                    Cadastrar
+                                    Register
                                 </a>
                             </li>
                         }

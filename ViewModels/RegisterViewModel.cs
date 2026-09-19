@@ -1,23 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmprestimoLivros.ViewModels;
 
 public class RegisterViewModel
 {
-    [Required(ErrorMessage = "O email é obrigatorio!")]
-    [EmailAddress(ErrorMessage = "Email invalido")]
+    [Required(ErrorMessage = "Email is required!")]
+    [EmailAddress(ErrorMessage = "Invalid email")]
     [Display(Name = "Email")]
     public string Email { get; set; } = string.Empty;
 
 
-    [Required(ErrorMessage = "A senha é obrigatória!")]
-    [StringLength(100, ErrorMessage = "A senha deve ter no minimo {2} caracteres", MinimumLength = 6)]
+    [Required(ErrorMessage = "Password is required!")]
+    [StringLength(100, ErrorMessage = "Password must be at least {2} characters long", MinimumLength = 6)]
     [DataType(DataType.Password)]
-    [Display(Name = "Senha")]
+    [Display(Name = "Password")]
     public string Password { get; set; } = string.Empty;
 
     [DataType(DataType.Password)]
-    [Display(Name = "Confirmar senha")]
-    [Compare("Password", ErrorMessage = "As senhas nao conferem")]  
+    [Display(Name = "Confirm password")]
+    [Compare("Password", ErrorMessage = "Passwords do not match")]
     public string ConfirmPassword { get; set; } = string.Empty;
 }

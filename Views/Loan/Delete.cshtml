@@ -1,0 +1,41 @@
+@model Loan
+@{
+    ViewData["title"] = "Delete Loan";
+}
+
+<div class="container bg-dark p-5 rounded-5">
+
+    <div class="mb-5 text-center">
+        <h1 class="text-light">Delete Loan</h1>
+    </div>
+
+    <form method="post" asp-controller="Loan" asp-action="Delete">
+        <input type="hidden" asp-for=Id />
+
+        <h2 class="text-light">Are you sure you want to delete this record?</h2>
+
+        <div class="mb-3">
+            <label for="Borrower" class="form-label text-light">Borrower:</label>
+            <input type="text" class="form-control text-light" asp-for="Borrower" id="Borrower" placeholder="Who is receiving the book?" disabled>
+            <span class="text-danger" asp-validation-for="Borrower"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="Lender" class="form-label text-light">Lender:</label>
+            <input type="text" class="form-control text-light" asp-for="Lender" id="Lender" placeholder="Who is lending the book?" disabled>
+            <span class="text-danger" asp-validation-for="Lender"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="Book" class="form-label text-light">Book:</label>
+            <input type="text" class="form-control text-light" id="Book" asp-for="BookTitle" placeholder="Which book is being borrowed?" disabled>
+            <span class="text-danger" asp-validation-for="BookTitle"></span>
+        </div>
+
+        <div class="d-flex  gap-5 mt-5 ">
+            <button type="submit" class="btn btn-danger w-50">Delete</button>
+            <a class="btn btn-primary w-50" asp-controller="Loan" asp-action="Index">Back</a>
+        </div>
+    </form>
+
+</div>

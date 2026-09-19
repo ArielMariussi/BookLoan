@@ -1,4 +1,4 @@
-﻿using EmprestimoLivros.Data;
+using EmprestimoLivros.Data;
 using EmprestimoLivros.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +10,8 @@ namespace EmprestimoLivros.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ResetDemoDataService> _logger;
 
-        // ⏰ De quanto em quanto tempo resetar (24 horas)
-        private readonly TimeSpan _intervalo = TimeSpan.FromMinutes(30);
+        // ⏰ How often to reset (30 minutes)
+        private readonly TimeSpan _interval = TimeSpan.FromMinutes(30);
 
         public ResetDemoDataService(
             IServiceProvider serviceProvider,
@@ -23,135 +23,135 @@ namespace EmprestimoLivros.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("🔄 ResetDemoDataService iniciado. Reset a cada {Horas}h.", _intervalo.TotalHours);
+            _logger.LogInformation("🔄 ResetDemoDataService started. Reset every {Hours}h.", _interval.TotalHours);
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    // Espera o intervalo ANTES de resetar
-                    // (na primeira execução, espera 24h pra não resetar logo após o startup)
-                    await Task.Delay(_intervalo, stoppingToken);
+                    // Wait for the interval BEFORE resetting
+                    // (on first run, wait so it doesn't reset right after startup)
+                    await Task.Delay(_interval, stoppingToken);
 
-                    await ResetarDadosDemoAsync();
+                    await ResetDemoDataAsync();
                 }
                 catch (OperationCanceledException)
                 {
-                    // App está fechando, nada de errado
+                    // App is shutting down, nothing wrong here
                     break;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "❌ Erro ao resetar dados do demo.");
+                    _logger.LogError(ex, "❌ Error resetting demo data.");
                 }
             }
 
-            _logger.LogInformation("🛑 ResetDemoDataService parado.");
+            _logger.LogInformation("🛑 ResetDemoDataService stopped.");
         }
 
-        private async Task ResetarDadosDemoAsync()
+        private async Task ResetDemoDataAsync()
         {
-            _logger.LogInformation("🔄 Iniciando reset dos dados do demo...");
+            _logger.LogInformation("🔄 Starting demo data reset...");
 
             using var scope = _serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            // 1. Encontrar usuário demo
+            // 1. Find demo user
             var demoUser = await userManager.FindByEmailAsync(SeedData.DemoEmail);
 
             if (demoUser == null)
             {
-                _logger.LogWarning("⚠️ Conta demo não encontrada. Pulando reset.");
+                _logger.LogWarning("⚠️ Demo account not found. Skipping reset.");
                 return;
             }
 
-            // 2. Apagar TODOS os empréstimos do demo
-            var emprestimosDoDemo = await context.Emprestimos
-                .Where(e => e.UserId == demoUser.Id)
+            // 2. Delete ALL demo loans
+            var demoLoans = await context.Loans
+                .Where(l => l.UserId == demoUser.Id)
                 .ToListAsync();
 
-            if (emprestimosDoDemo.Any())
+            if (demoLoans.Any())
             {
-                context.Emprestimos.RemoveRange(emprestimosDoDemo);
+                context.Loans.RemoveRange(demoLoans);
                 await context.SaveChangesAsync();
-                _logger.LogInformation("🗑️ {Quantidade} empréstimos do demo apagados.", emprestimosDoDemo.Count);
+                _logger.LogInformation("🗑️ {Count} demo loans deleted.", demoLoans.Count);
             }
 
-            // 3. Recriar empréstimos bonitos
-            var emprestimosDemo = CriarListaEmprestimosDemo(demoUser.Id);
-            await context.Emprestimos.AddRangeAsync(emprestimosDemo);
+            // 3. Recreate nice demo loans
+            var newDemoLoans = CreateDemoLoansList(demoUser.Id);
+            await context.Loans.AddRangeAsync(newDemoLoans);
             await context.SaveChangesAsync();
 
-            _logger.LogInformation("✅ {Quantidade} empréstimos demo recriados com sucesso!", emprestimosDemo.Count);
+            _logger.LogInformation("✅ {Count} demo loans recreated successfully!", newDemoLoans.Count);
         }
 
-        private static List<Emprestimo> CriarListaEmprestimosDemo(string demoUserId)
+        private static List<Loan> CreateDemoLoansList(string demoUserId)
         {
-            return new List<Emprestimo>
+            return new List<Loan>
             {
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Maria Silva",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "Dom Casmurro - Machado de Assis",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-2),
+                    Borrower = "Maria Silva",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "Dom Casmurro - Machado de Assis",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-2),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "João Pedro",
-                    Fornecedor = "Ana Costa",
-                    LivroEmprestado = "1984 - George Orwell",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-5),
+                    Borrower = "João Pedro",
+                    Lender = "Ana Costa",
+                    BookTitle = "1984 - George Orwell",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-5),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Carla Mendes",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "O Hobbit - J.R.R. Tolkien",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-1),
+                    Borrower = "Carla Mendes",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "O Hobbit - J.R.R. Tolkien",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-1),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Roberto Lima",
-                    Fornecedor = "Patrícia Souza",
-                    LivroEmprestado = "Sapiens - Yuval Noah Harari",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-7),
+                    Borrower = "Roberto Lima",
+                    Lender = "Patrícia Souza",
+                    BookTitle = "Sapiens - Yuval Noah Harari",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-7),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Fernanda Alves",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "Cem Anos de Solidão - Gabriel García Márquez",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-3),
+                    Borrower = "Fernanda Alves",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "Cem Anos de Solidão - Gabriel García Márquez",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-3),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Lucas Oliveira",
-                    Fornecedor = "Marina Reis",
-                    LivroEmprestado = "O Pequeno Príncipe - Antoine de Saint-Exupéry",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-10),
+                    Borrower = "Lucas Oliveira",
+                    Lender = "Marina Reis",
+                    BookTitle = "O Pequeno Príncipe - Antoine de Saint-Exupéry",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-10),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Beatriz Santos",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "Senhor dos Anéis - J.R.R. Tolkien",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-4),
+                    Borrower = "Beatriz Santos",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "Senhor dos Anéis - J.R.R. Tolkien",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-4),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Gabriel Rocha",
-                    Fornecedor = "Camila Ferreira",
-                    LivroEmprestado = "A Revolução dos Bichos - George Orwell",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-6),
+                    Borrower = "Gabriel Rocha",
+                    Lender = "Camila Ferreira",
+                    BookTitle = "A Revolução dos Bichos - George Orwell",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-6),
                     UserId = demoUserId
                 }
             };

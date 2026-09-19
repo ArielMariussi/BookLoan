@@ -9,7 +9,7 @@
     <div class="col-md-5">
         <div class="card">
             <div class="card-header text-center">
-                <h3>🔑 Entrar</h3>
+                <h3>🔑 Sign In</h3>
             </div>
             <div class="card-body">
                 <form asp-action="Login" method="post">
@@ -32,19 +32,19 @@
                         <label asp-for="RememberMe" class="form-check-label"></label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    <button type="submit" class="btn btn-primary w-100">Sign In</button>
                 </form>
 
                 <hr class="my-4" />
 
                 <form asp-action="LoginDemo" method="post">
                     <button type="submit" class="btn btn-warning w-100">
-                        🎭 Entrar como Demo
+                        🎭 Sign In as Demo
                     </button>
                 </form>
 
                 <p class="text-center mt-3 mb-0">
-                    Não tem conta? <a asp-action="Register">Cadastre-se</a>
+                    Don't have an account? <a asp-action="Register">Sign up</a>
                 </p>
             </div>
         </div>

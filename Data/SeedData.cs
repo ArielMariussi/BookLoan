@@ -1,4 +1,4 @@
-﻿using EmprestimoLivros.Models;
+using EmprestimoLivros.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,25 +9,25 @@ namespace EmprestimoLivros.Data
         public const string DemoEmail = "demo@demo.com";
         public const string DemoPassword = "Demo@123";
 
-        public static async Task InicializarAsync(IServiceProvider serviceProvider)
+        public static async Task InitializeAsync(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-            
-            var demoUser = await CriarContaDemoAsync(userManager);
+
+            var demoUser = await CreateDemoAccountAsync(userManager);
 
             if (demoUser == null)
             {
-                Console.WriteLine("⚠️ Não foi possível criar/encontrar a conta demo. Pulando seed de empréstimos.");
+                Console.WriteLine("⚠️ Could not create/find the demo account. Skipping loan seeding.");
                 return;
             }
 
-            
-            await CriarEmprestimosDemoAsync(context, demoUser.Id);
+
+            await CreateDemoLoansAsync(context, demoUser.Id);
         }
 
-        private static async Task<IdentityUser?> CriarContaDemoAsync(UserManager<IdentityUser> userManager)
+        private static async Task<IdentityUser?> CreateDemoAccountAsync(UserManager<IdentityUser> userManager)
         {
             var demoUser = await userManager.FindByEmailAsync(DemoEmail);
 
@@ -44,12 +44,12 @@ namespace EmprestimoLivros.Data
 
                 if (result.Succeeded)
                 {
-                    Console.WriteLine("✅ Conta demo criada com sucesso!");
+                    Console.WriteLine("✅ Demo account created successfully!");
                     return demoUser;
                 }
                 else
                 {
-                    Console.WriteLine("❌ Erro ao criar conta demo:");
+                    Console.WriteLine("❌ Error creating demo account:");
                     foreach (var error in result.Errors)
                     {
                         Console.WriteLine($"   - {error.Description}");
@@ -58,95 +58,95 @@ namespace EmprestimoLivros.Data
                 }
             }
 
-            Console.WriteLine("ℹ️ Conta demo já existe no banco.");
+            Console.WriteLine("ℹ️ Demo account already exists in the database.");
             return demoUser;
         }
 
-        private static async Task CriarEmprestimosDemoAsync(ApplicationDbContext context, string demoUserId)
+        private static async Task CreateDemoLoansAsync(ApplicationDbContext context, string demoUserId)
         {
-           
-            var jaTemEmprestimos = await context.Emprestimos
-                .AnyAsync(e => e.UserId == demoUserId);
 
-            if (jaTemEmprestimos)
+            var alreadyHasLoans = await context.Loans
+                .AnyAsync(l => l.UserId == demoUserId);
+
+            if (alreadyHasLoans)
             {
-                Console.WriteLine("ℹ️ Conta demo já possui empréstimos cadastrados.");
+                Console.WriteLine("ℹ️ Demo account already has loans registered.");
                 return;
             }
 
-            
-            var emprestimosDemo = new List<Emprestimo>
+
+            var demoLoans = new List<Loan>
             {
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Maria Silva",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "Dom Casmurro - Machado de Assis",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-2),
+                    Borrower = "Maria Silva",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "Dom Casmurro - Machado de Assis",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-2),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "João Pedro",
-                    Fornecedor = "Ana Costa",
-                    LivroEmprestado = "1984 - George Orwell",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-5),
+                    Borrower = "João Pedro",
+                    Lender = "Ana Costa",
+                    BookTitle = "1984 - George Orwell",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-5),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Carla Mendes",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "O Hobbit - J.R.R. Tolkien",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-1),
+                    Borrower = "Carla Mendes",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "O Hobbit - J.R.R. Tolkien",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-1),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Roberto Lima",
-                    Fornecedor = "Patrícia Souza",
-                    LivroEmprestado = "Sapiens - Yuval Noah Harari",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-7),
+                    Borrower = "Roberto Lima",
+                    Lender = "Patrícia Souza",
+                    BookTitle = "Sapiens - Yuval Noah Harari",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-7),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Fernanda Alves",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "Cem Anos de Solidão - Gabriel García Márquez",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-3),
+                    Borrower = "Fernanda Alves",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "Cem Anos de Solidão - Gabriel García Márquez",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-3),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Lucas Oliveira",
-                    Fornecedor = "Marina Reis",
-                    LivroEmprestado = "O Pequeno Príncipe - Antoine de Saint-Exupéry",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-10),
+                    Borrower = "Lucas Oliveira",
+                    Lender = "Marina Reis",
+                    BookTitle = "O Pequeno Príncipe - Antoine de Saint-Exupéry",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-10),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Beatriz Santos",
-                    Fornecedor = "Biblioteca Central",
-                    LivroEmprestado = "Senhor dos Anéis - J.R.R. Tolkien",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-4),
+                    Borrower = "Beatriz Santos",
+                    Lender = "Biblioteca Central",
+                    BookTitle = "Senhor dos Anéis - J.R.R. Tolkien",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-4),
                     UserId = demoUserId
                 },
-                new Emprestimo
+                new Loan
                 {
-                    Recebedor = "Gabriel Rocha",
-                    Fornecedor = "Camila Ferreira",
-                    LivroEmprestado = "A Revolução dos Bichos - George Orwell",
-                    DataUltimaAtualizacao = DateTime.UtcNow.AddDays(-6),
+                    Borrower = "Gabriel Rocha",
+                    Lender = "Camila Ferreira",
+                    BookTitle = "A Revolução dos Bichos - George Orwell",
+                    LastUpdatedAt = DateTime.UtcNow.AddDays(-6),
                     UserId = demoUserId
                 }
             };
 
-            await context.Emprestimos.AddRangeAsync(emprestimosDemo);
+            await context.Loans.AddRangeAsync(demoLoans);
             await context.SaveChangesAsync();
 
-            Console.WriteLine($"✅ {emprestimosDemo.Count} empréstimos demo criados com sucesso!");
+            Console.WriteLine($"✅ {demoLoans.Count} demo loans created successfully!");
         }
     }
 }
