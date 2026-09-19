@@ -1,4 +1,4 @@
-# EmprestimoLivros
+# EmprestimoLivros(BookLoan)
 
 Web system for managing book loans, built with ASP.NET Core 9 MVC.
 
